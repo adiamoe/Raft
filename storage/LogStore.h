@@ -10,7 +10,7 @@
 namespace pod{
     class LogStore{
     private:
-        std::vector<int> entry;
+        std::vector<long> entry;
         int lastIndex;
     public:
 
@@ -18,7 +18,13 @@ namespace pod{
             return lastIndex;
         }
 
-        void append(int index){
+        void append(int index, long log){
+            if(index > entry.size()-1)
+                entry.push_back(log);
+            else
+                entry[index] = log;
+
+            lastIndex = index;
         }
     };
 }

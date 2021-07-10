@@ -4,11 +4,13 @@
 
 #ifndef RAFT_ABSTRACTSTATE_H
 #define RAFT_ABSTRACTSTATE_H
+#include "ServerContext.h"
 
-
-class AbstractState {
-
-};
+namespace pod{
+    class AbstractState{
+        ServerContext context;
+    };
+}
 
 
 #endif //RAFT_ABSTRACTSTATE_H
