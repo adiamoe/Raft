@@ -9,16 +9,16 @@ using std::endl;
 
 namespace grape{
 
-    void Logger::INFO(const std::string &msg){
-        std::cout<<"[INFO]"<<msg<<endl;
+    void Logger::INFO(const format &msg){
+        std::cout<<"[INFO] "<<msg<<endl;
     }
 
-    void Logger::WARN(const std::string &msg){
-        std::cout<<"[WARN]"<<msg<<endl;
+    void Logger::WARN(const format &msg){
+        std::cout<<"[WARN] "<<msg<<endl;
     }
 
-    void Logger::ERROR(const std::string &message){
-        std::cout<<"[ERROR]"<<message<<endl;
+    void Logger::ERROR(const format &message){
+        std::cout<<"[ERROR] "<<message<<endl;
         exit(-1);
     }
 }
