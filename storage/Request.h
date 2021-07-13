@@ -28,6 +28,7 @@ namespace pod{
         REQUEST_TYPE type = APPEND;
         int leaderID;
         int leaderTerm;
+        int entryIndex;
         int commitIndex;
         int lastEntryTerm;
         int lastEntryIndex;
@@ -45,11 +46,13 @@ namespace pod{
 
     struct AppendResponse{
         REQUEST_TYPE type = APPEND_RESPONSE;
+        int followerTerm;
         bool success;
     };
 
     struct VoteResponse{
         REQUEST_TYPE type = VOTE_RESPONSE;
+        int followerTerm;
         bool grant;
     };
 

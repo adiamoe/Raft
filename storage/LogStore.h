@@ -6,24 +6,41 @@
 #define RAFT_LOGSTORE_H
 
 #include <vector>
+#include <string>
 
 namespace pod{
     class LogStore{
     private:
-        std::vector<long> entry;
+        struct LogEntry{
+            int term;
+            std::string log;
+        };
+
+        std::vector<LogEntry> entry;
         int lastIndex;
     public:
 
-        int LastIndex() {
+        LogStore():lastIndex(0){}
+
+        int LastIndex() const {
             return lastIndex;
         }
 
-        void append(int index, long log){
-            if(index > entry.size()-1)
-                entry.push_back(log);
-            else
-                entry[index] = log;
+        int Term(int index) const{
+            return entry[index].term;
+        }
 
+        size_t entrySize() const{
+            return entry.size();
+        }
+
+        void append(int term, int index, const std::string &log){
+            if(index == entry.size()){
+                entry.push_back({term, log});
+            }
+            else{
+                entry[index] = {term, log};
+            }
             lastIndex = index;
         }
     };

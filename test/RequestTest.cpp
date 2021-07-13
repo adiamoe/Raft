@@ -20,11 +20,8 @@ int main(){
     std::string json_to = CreateAppendRequest(re);
     std::cout<<json_to<<std::endl;
 
-    json js = json::parse(json_to);
-    std::cout<<js<<std::endl;
-
     AppendRequest re2;
-    re2 = GetAppendRequest(js);
+    re2 = GetAppendRequest(json_to);
     std::cout<<re2.log<<std::endl;
     std::cout<<(re2.type == APPEND)<<std::endl;
 

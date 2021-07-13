@@ -11,6 +11,7 @@ namespace pod{
         js["type"] = int(APPEND);
         js["leaderID"] = re.leaderID;
         js["leaderTerm"] = re.leaderTerm;
+        js["entryIndex"] = re.entryIndex;
         js["commitIndex"] = re.commitIndex;
         js["lastEntryTerm"] = re.lastEntryTerm;
         js["lastEntryIndex"] = re.lastEntryIndex;
@@ -32,6 +33,7 @@ namespace pod{
     std::string CreateAppendResponse(const AppendResponse &re){
         json js;
         js["type"] = int(APPEND_RESPONSE);
+        js["followerTerm"] = re.followerTerm;
         js["seccess"] = re.success;
         return js.dump();
     }
@@ -39,6 +41,7 @@ namespace pod{
     std::string CreateVoteResponse(const VoteResponse &re){
         json js;
         js["type"] = int(VOTE_RESPONSE);
+        js["followerTerm"] = re.followerTerm;
         js["grant"] = re.grant;
         return js.dump();
     }
@@ -55,6 +58,7 @@ namespace pod{
         re.type = (REQUEST_TYPE) js["type"].get<int>();
         re.leaderID = js["leaderID"].get<int>();
         re.leaderTerm = js["leaderTerm"].get<int>();
+        re.entryIndex = js["entryIndex"].get<int>();
         re.commitIndex = js["commitIndex"].get<int>();
         re.lastEntryTerm = js["lastEntryTerm"].get<int>();
         re.lastEntryIndex = js["lastEntryIndex"].get<int>();
@@ -76,6 +80,7 @@ namespace pod{
     AppendResponse GetAppendResponse(const json &js){
         AppendResponse re;
         re.type = (REQUEST_TYPE) js["type"].get<int>();
+        re.followerTerm = js["followerTerm"].get<int>();
         re.success = js["success"].get<bool>();
         return re;
     }
@@ -83,6 +88,7 @@ namespace pod{
     VoteResponse GetVoteResponse(const json &js){
         VoteResponse re;
         re.type = (REQUEST_TYPE) js["type"].get<int>();
+        re.followerTerm = js["followerTerm"].get<int>();
         re.grant = js["grant"].get<bool>();
         return re;
     }

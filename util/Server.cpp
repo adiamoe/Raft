@@ -20,7 +20,7 @@ namespace grape{
                 se->Start();
             }
             else{
-                Logger::WARN("Accept Failed");
+                Logger::WARN(format("Accept Failed"));
             }
             DoAccept();
         });

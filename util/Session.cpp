@@ -25,7 +25,7 @@ namespace grape{
             self->length_ = NetworkToHost(self->length_);
             if(self->length_  > self->read_buffer_.size()){
                 self->state_ = overflow;
-                Logger::WARN("overflow");
+                Logger::WARN(format("overflow"));
                 self->OnClose();
             }
             else{
@@ -34,7 +34,7 @@ namespace grape{
         }
         else{
             self->state_ = read_error;
-            Logger::WARN("read_error");
+            Logger::WARN(format("read_error"));
             self->OnClose();
         }
         });
@@ -46,7 +46,7 @@ namespace grape{
                                 [self](boost::system::error_code ec, size_t length){
             if(!ec)
             {
-                Logger::INFO("Read message:"+ string(self->read_buffer_.data()));
+                Logger::INFO(format("Read message %1%") % self->read_buffer_.data());
                 self->OnMessage();
                 if(self->state_ == normal)
                     self->DoReadLength();
@@ -55,7 +55,7 @@ namespace grape{
             }
             else{
                 self->state_ = read_error;
-                Logger::WARN("read_error");
+                Logger::WARN(format("read_error"));
                 self->OnClose();
             }
         });
@@ -96,7 +96,7 @@ namespace grape{
                }
                else {
                    self->state_ = write_error;
-                   Logger::WARN("write_error");
+                   Logger::WARN(format("write_error"));
                    self->OnClose();
                }
             });

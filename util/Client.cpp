@@ -12,11 +12,11 @@ namespace grape{
 
     void Client::OnResolve(boost::system::error_code ec, tcp::resolver::results_type endpoints){
         if(!ec){
-            Logger::INFO("Resolve Succeed");
+            Logger::INFO(format("Resolve Succeed"));
             boost::asio::async_connect(socket_, endpoints, bind(&Client::OnConnect, this, placeholders::_1));
         }
         else{
-            Logger::WARN("Resolve Failed");
+            Logger::WARN(format("Resolve Failed"));
         }
     }
 
@@ -26,12 +26,12 @@ namespace grape{
             se->SetMessage(message_f);
             se->SetConnection(connection_f);
             se->SetClose(close_f);
-            Logger::INFO("Connect Succeed");
+            Logger::INFO(format("Connect Succeed"));
             se->DoWrite("Hello World!");
             se->Start();
         }
         else {
-            Logger::WARN("Connect Failed");
+            Logger::WARN(format("Connect Failed"));
         }
     }
 
