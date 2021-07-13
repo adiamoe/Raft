@@ -4,29 +4,39 @@
 
 #ifndef RAFT_SERVERCONTEXT_H
 #define RAFT_SERVERCONTEXT_H
+
+#include "../util/Client.h"
 #include "../storage/LogStore.h"
 #include "../util/Log.h"
+#include "../storage/Request.h"
+#include <vector>
 
 namespace pod{
     class ServerContext{
     private:
+
+        std::vector<int> member;
+        std::vector<grape::Client> sender;
+
         int ServerId;
 
         volatile int leader;
         volatile int term;
         volatile int commitIndex;
+        volatile int lastVote;
 
         LogStore store;
 
     public:
-        void Append(int appendTerm, int index, long log);
+
+        ServerContext():leader(0), term(0), commitIndex(-1), lastVote(0){}
 
         int GetID(){
             return ServerId;
         }
 
         void SetTerm(int newTerm){
-            assert(term<newTerm);
+            assert(term <= newTerm);
             term = newTerm;
         }
 
@@ -40,6 +50,14 @@ namespace pod{
 
         int GetTerm(){
             return term;
+        }
+
+        int GetLastVote(){
+            return lastVote;
+        }
+
+        LogStore& GetLogStore(){
+            return store;
         }
 
     };
