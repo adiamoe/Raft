@@ -33,8 +33,12 @@ namespace grape{
             }
         }
         else{
-            self->state_ = read_error;
-            Logger::WARN(format("read_error"));
+            if(ec == boost::asio::error::eof)
+                Logger::INFO(format("Connection close"));
+            else{
+                self->state_ = read_error;
+                Logger::WARN(format("read_error"));
+            }
             self->OnClose();
         }
         });
@@ -54,8 +58,12 @@ namespace grape{
                     self->OnClose();
             }
             else{
-                self->state_ = read_error;
-                Logger::WARN(format("read_error"));
+                if(ec == boost::asio::error::eof)
+                    Logger::INFO(format("Connection close"));
+                else{
+                    self->state_ = read_error;
+                    Logger::WARN(format("read_error"));
+                }
                 self->OnClose();
             }
         });
@@ -78,7 +86,8 @@ namespace grape{
     }
 
     void Session::DoSend() {
-        assert(mode_ == writting);
+        if(mode_ != writting)
+            return;
         auto self(shared_from_this());
         if(write_buffer_.empty()){
             mode_ = ready;

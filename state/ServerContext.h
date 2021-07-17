@@ -11,28 +11,37 @@
 #include "../storage/Request.h"
 #include <vector>
 
+class AbstractState;
+
 namespace pod{
     class ServerContext{
     private:
-
-        std::vector<int> member;
-        std::vector<grape::Client> sender;
-
-        int ServerId;
 
         volatile int leader;
         volatile int term;
         volatile int commitIndex;
         volatile int lastVote;
 
+        int memberNum;
+        int serverId;
+
         LogStore store;
+        AbstractState *state;
 
     public:
 
-        ServerContext():leader(0), term(0), commitIndex(-1), lastVote(0){}
+        enum STATE_TYPE{
+            FOLLOWER,
+            CANDIDATE,
+            LEADER
+        };
 
-        int GetID(){
-            return ServerId;
+        ServerContext(ServerContext &context) = default;
+
+        ServerContext(int member, int id):memberNum(member), serverId(id), leader(0), term(0), commitIndex(-1), lastVote(0){}
+
+        void SetCommitIndex(int index){
+            commitIndex = index;
         }
 
         void SetTerm(int newTerm){
@@ -59,6 +68,14 @@ namespace pod{
         LogStore& GetLogStore(){
             return store;
         }
+
+        int GetMemberNumber(){
+            return memberNum;
+        }
+
+        AppendRequest Append(string &log);
+
+        VoteRequest Vote();
 
     };
 }

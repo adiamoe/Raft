@@ -6,86 +6,30 @@
 
 namespace pod{
 
-    FollowerState::FollowerState(ServerContext &context) : AbstractState(context) {
-
+    bool FollowerState::HandleAppendRequest(json &AppendRe, string &r) {
+        return AbstractState::HandleAppendRequest(AppendRe, r);
     }
 
-    void FollowerState::HandleAppendRequest(json &AppendRe) {
-
-        AppendRequest re = GetAppendRequest(AppendRe);
-        if(re.leaderTerm < context.GetTerm()){
-            grape::Logger::WARN(format("Append Rejected: leader Term %1% < current Term %2%")
-                                        % re.leaderTerm % context.GetTerm());
-            return;
-        }
-
-        UpdateTermAndLeader(re.leaderTerm, re.leaderID);
-
-        if(context.GetLeader() == re.leaderID){
-            //取消定时器
-            timer->reset();
-            return;
-        }
-
-        int prevEntry = context.GetLogStore().LastIndex();
-        int prevTerm = context.GetLogStore().Term(re.lastEntryIndex);
-        if(re.lastEntryIndex > prevEntry){
-            grape::Logger::WARN(format("Append Rejected: previous index %1% > local last index %2%")
-                                        % re.lastEntryIndex % prevEntry);
-            return;
-        }
-        if(re.lastEntryTerm != prevTerm){
-            grape::Logger::WARN(format("Append Rejected: previous term %1% != local log Term in the previous entry %2%")
-                                % re.lastEntryTerm % prevTerm);
-            return;
-        }
-
-        size_t entrySize = context.GetLogStore().entrySize();
-        if(re.entryIndex > entrySize){
-            grape::Logger::WARN(format("Append Rejected: entry index %1% > local log current entry %2%")
-                                % re.entryIndex % entrySize);
-
-            return;
-        }
-
-        grape::Logger::INFO(format("Append entry into local log %1%") % re.entryIndex);
-        context.GetLogStore().append(re.leaderTerm, re.entryIndex, re.log);
-    }
-
-    void FollowerState::HandleAppendResponse(json &AppendRe) {
+    bool FollowerState::HandleAppendResponse(json &AppendRe, string &r) {
         grape::Logger::WARN(format("Follower state not support append response!"));
     }
 
-    void FollowerState::HandleVoteRequest(json &VoteRe) {
-
-        VoteRequest re = GetVoteRequest(VoteRe);
-        if(re.candidateTerm < context.GetTerm()){
-            grape::Logger::WARN(format("Vote Rejected: candidate term %1% < local term %2%")
-                                %re.candidateTerm % context.GetTerm());
-            return;
-        }
-
-        UpdateTermAndLeader(re.candidateTerm, 0);
-
-        if(context.GetLeader() != 0){
-            grape::Logger::WARN(format("Vote Rejected: There can be only one leader in the same term!"));
-            return;
-        }
-
-        if(context.GetLastVote() != 0){
-            grape::Logger::WARN(format("Vote Rejected: Already voted for other candidate!"));
-            return;
-        }
-
-        grape::Logger::INFO(format("Vote Granted: Vote for %1%")%re.candidateID);
+    bool FollowerState::HandleVoteRequest(json &VoteRe, string &r) {
+        return AbstractState::HandleVoteRequest(VoteRe, r);
     }
 
-    void FollowerState::HandleVoteResponse(json &VoteRe) {
+    bool FollowerState::HandleVoteResponse(json &VoteRe, string &r) {
         grape::Logger::WARN(format("Follower state not support vote response!"));
+        return false;
     }
 
-    AbstractState::STATE_TYPE FollowerState::type() {
-        return FOLLOWER;
+    bool FollowerState::CommandRequest(json &command, string &r) {
+        grape::Logger::WARN(format("Follower state not support command Request!"));
+        return false;
+    }
+
+    ServerContext::STATE_TYPE FollowerState::type() {
+        return ServerContext::FOLLOWER;
     }
 
 }

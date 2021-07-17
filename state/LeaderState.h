@@ -1,22 +1,22 @@
 //
-// Created by 靖晏 on 2021/7/12.
+// Created by 靖晏 on 2021/7/17.
 //
 
-#ifndef RAFT_FOLLOWERSTATE_H
-#define RAFT_FOLLOWERSTATE_H
-
-#include <utility>
+#ifndef RAFT_LEADERSTATE_H
+#define RAFT_LEADERSTATE_H
 
 #include "AbstractState.h"
-#include "CandidataState.h"
+#include <map>
 
 namespace pod{
-    class FollowerState : public AbstractState{
-
+    class LeaderState : public AbstractState{
+    private:
+        map<int, int> LogToCommit;
     public:
-        FollowerState(int member, int id): AbstractState(member, id) {}
 
-        FollowerState(ServerContext context): AbstractState(context){}
+        LeaderState(ServerContext context, int id): AbstractState(context){
+            UpdateTermAndLeader(context.GetTerm(), id);
+        }
 
         bool CommandRequest(json &command, string &r) override;
 
@@ -30,8 +30,9 @@ namespace pod{
 
         ServerContext::STATE_TYPE type() override;
 
+        string HeartBeat() override;
+
     };
 }
 
-
-#endif //RAFT_FOLLOWERSTATE_H
+#endif //RAFT_LEADERSTATE_H

@@ -22,6 +22,8 @@ namespace pod{
 
         LogStore():lastIndex(0){}
 
+        LogStore(LogStore &store) = default;
+
         int LastIndex() const {
             return lastIndex;
         }
@@ -42,6 +44,11 @@ namespace pod{
                 entry[index] = {term, log};
             }
             lastIndex = index;
+        }
+
+        void append(int term, const std::string &log){
+            entry.push_back({term, log});
+            lastIndex = entrySize() - 1;
         }
     };
 }

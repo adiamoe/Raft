@@ -16,7 +16,8 @@ namespace pod{
         VOTE = 2,               //candidate向其他节点请求投票
         APPEND_RESPONSE = 3,    //append响应结果
         VOTE_RESPONSE = 4,      //投票响应结果
-        COMMAND = 5            //客户端请求
+        COMMAND = 5,            //客户端请求
+        TRANSFER = 6
     };
 
     struct Command{
@@ -47,6 +48,7 @@ namespace pod{
     struct AppendResponse{
         REQUEST_TYPE type = APPEND_RESPONSE;
         int followerTerm;
+        int index;
         bool success;
     };
 
@@ -56,17 +58,24 @@ namespace pod{
         bool grant;
     };
 
+    struct Transfer{
+        REQUEST_TYPE type = TRANSFER;
+        bool TransferToLeader;
+    };
+
     std::string CreateAppendRequest(const AppendRequest& re);
     std::string CreateVoteRequest(const VoteRequest &re);
     std::string CreateAppendResponse(const AppendResponse &re);
     std::string CreateVoteResponse(const VoteResponse &re);
     std::string CreateCommand(const Command &co);
+    std::string CreateTransfer(const Transfer &ts);
 
     AppendRequest GetAppendRequest(const json &js);
     VoteRequest GetVoteRequest(const json &js);
     AppendResponse GetAppendResponse(const json &js);
     VoteResponse GetVoteResponse(const json &js);
     Command GetCommand(const json &js);
+    Transfer GetTransfer(const json &js);
 }
 
 #endif //RAFT_REQUEST_H

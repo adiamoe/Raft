@@ -5,6 +5,7 @@
 #ifndef RAFT_ABSTRACTSTATE_H
 #define RAFT_ABSTRACTSTATE_H
 
+#include <boost/asio.hpp>
 #include "ServerContext.h"
 #include "../util/timer.h"
 #include "../jsonxx/json.hpp"
@@ -17,51 +18,39 @@ namespace pod{
     class AbstractState{
     protected:
         ServerContext context;
-        grape::Timer *timer;
     public:
 
-        enum STATE_TYPE{
-            FOLLOWER,
-            CANDIDATE,
-            LEADER
-        };
+        AbstractState(int member, int id): context(member, id){}
 
-        AbstractState(ServerContext &context):context(context){
-            timer = nullptr;
+        AbstractState(ServerContext context):context(context){}
+
+        ServerContext& GetContext(){
+            return context;
         }
 
-        void HandleClientRequest(string &to_json){
-            json js = json::parse(to_json);
-            switch (js["type"].get<int>()) {
-                case APPEND:
-                    HandleAppendRequest(js);
-                    break;
-                case VOTE:
-                    HandleVoteRequest(js);
-                    break;
-                case APPEND_RESPONSE:
-                    HandleAppendResponse(js);
-                    break;
-                case VOTE_RESPONSE:
-                    HandleVoteResponse(js);
-                    break;
-                case COMMAND:
-                    CommandRequest(js);
-                    break;
-            }
+        virtual bool CommandRequest(json &command, string &r) = 0;
+
+        virtual bool HandleAppendRequest(json &AppendRe, string &r);
+
+        virtual bool HandleVoteRequest(json &VoteRe, string &r);
+
+        virtual bool HandleAppendResponse(json &AppendRe, string &r) = 0;
+
+        virtual bool HandleVoteResponse(json &VoteRe, string &r) = 0;
+
+        virtual ServerContext::STATE_TYPE type() = 0;
+
+        virtual string HeartBeat(){
+            grape::Logger::ERROR(format("not support!"));
         }
 
-        virtual void CommandRequest(json &command) = 0;
+        virtual string pollRequest(){
+            grape::Logger::ERROR(format("not support!"));
+        }
 
-        virtual void HandleAppendRequest(json &AppendRe) = 0;
-
-        virtual void HandleVoteRequest(json &VoteRe) = 0;
-
-        virtual void HandleAppendResponse(json &AppendRe) = 0;
-
-        virtual void HandleVoteResponse(json &VoteRe) = 0;
-
-        virtual STATE_TYPE type() = 0;
+        int GetLeaderId(){
+            return context.GetLeader();
+        }
 
         bool UpdateTermAndLeader(int term, int leader);
 

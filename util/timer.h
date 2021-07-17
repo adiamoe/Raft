@@ -15,21 +15,28 @@ class Timer: public std::enable_shared_from_this<Timer> {
         using callBackFunction = std::function<void()>;
 
         Timer(boost::asio::io_context &ioc, const callBackFunction &fn, boost::asio::chrono::seconds time):  timer(ioc), handler(fn),
-                                                                                                          expire_time(time){}
+                                                                                                          expire_time(time), cancle(false){}
         void Start(){
             timer.expires_after(expire_time);
             auto self(shared_from_this());
 
             timer.async_wait([self](boost::system::error_code ec){
+                if(self->cancle)
+                    return;
                 self->handler();
             });
         }
 
-        void reset(){
+        void Reset(){
             timer.expires_after(expire_time);
         }
 
+        void Cancle(){
+            cancle = true;
+        }
+
     private:
+        bool cancle;
         boost::asio::steady_timer timer;
         callBackFunction handler;
         boost::asio::chrono::seconds expire_time;

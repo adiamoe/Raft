@@ -15,23 +15,34 @@ namespace grape{
     public:
         using callBackFunction = function<void(shared_ptr<Session> con)>;
 
-        Client(boost::asio::io_context &ioc, const std::string& host, const std::string& port);
+        Client(boost::asio::io_context &ioc);
 
         Client(const Client&) =delete;
         Client(Client &) =delete;
         Client& operator=(Client &) =delete;
         Client& operator=(const Client &) =delete;
 
-        void SetConnection(callBackFunction &con){
+        void Connect();
+
+        void SetConnection(const callBackFunction &con){
             connection_f = con;
         }
 
-        void SetMessage(callBackFunction &msg){
+        void SetMessage(const callBackFunction &msg){
             message_f = msg;
         }
 
-        void SetClose(callBackFunction &cls){
+        void SetClose(const callBackFunction &cls){
             close_f = cls;
+        }
+
+        void SetHostAndPort(const string &Host, const string &Port){
+            host = Host;
+            port = Port;
+        }
+
+        void SetContext(const string &context){
+            this->context = context;
         }
 
     private:
@@ -42,6 +53,9 @@ namespace grape{
 
         tcp::socket socket_;
         tcp::resolver resolver_;
+        string host;
+        string port;
+        string context;
 
         void OnResolve(boost::system::error_code ec, tcp::resolver::results_type endpoints);
 

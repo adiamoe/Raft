@@ -1,22 +1,24 @@
 //
-// Created by 靖晏 on 2021/7/12.
+// Created by 靖晏 on 2021/7/14.
 //
 
-#ifndef RAFT_FOLLOWERSTATE_H
-#define RAFT_FOLLOWERSTATE_H
+#ifndef RAFT_CANDIDATASTATE_H
+#define RAFT_CANDIDATASTATE_H
 
 #include <utility>
 
 #include "AbstractState.h"
-#include "CandidataState.h"
 
 namespace pod{
-    class FollowerState : public AbstractState{
-
+    class CandidateState : public AbstractState{
+    private:
+        int vote;
     public:
-        FollowerState(int member, int id): AbstractState(member, id) {}
+        CandidateState(ServerContext context): AbstractState(context), vote(0){
+            UpdateTermAndLeader(context.GetTerm()+1, 0);
+        }
 
-        FollowerState(ServerContext context): AbstractState(context){}
+        string pollRequest() override;
 
         bool CommandRequest(json &command, string &r) override;
 
@@ -29,9 +31,8 @@ namespace pod{
         bool HandleVoteResponse(json &VoteRe, string &r) override;
 
         ServerContext::STATE_TYPE type() override;
-
     };
 }
 
 
-#endif //RAFT_FOLLOWERSTATE_H
+#endif //RAFT_CANDIDATASTATE_H

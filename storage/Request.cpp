@@ -34,6 +34,7 @@ namespace pod{
         json js;
         js["type"] = int(APPEND_RESPONSE);
         js["followerTerm"] = re.followerTerm;
+        js["index"] = re.index;
         js["seccess"] = re.success;
         return js.dump();
     }
@@ -50,6 +51,13 @@ namespace pod{
         json js;
         js["type"] = int(COMMAND);
         js["log"] = co.log;
+        return js.dump();
+    }
+
+    std::string CreateTransfer(const Transfer &ts){
+        json js;
+        js["type"] = int(TRANSFER);
+        js["TransferToLeader"] = ts.TransferToLeader;
         return js.dump();
     }
 
@@ -82,6 +90,7 @@ namespace pod{
         re.type = (REQUEST_TYPE) js["type"].get<int>();
         re.followerTerm = js["followerTerm"].get<int>();
         re.success = js["success"].get<bool>();
+        re.index = js["index"].get<int>();
         return re;
     }
 
@@ -98,6 +107,13 @@ namespace pod{
         re.type = (REQUEST_TYPE) js["type"].get<int>();
         re.log = js["log"].get<std::string>();
         return re;
+    }
+
+    Transfer GetTransfer(const json &js){
+        Transfer ts;
+        ts.type = (REQUEST_TYPE) js["type"].get<int>();
+        ts.TransferToLeader = js["TransferToLeader"].get<bool>();
+        return ts;
     }
 
 }

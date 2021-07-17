@@ -3,9 +3,12 @@
 //
 
 #include "Client.h"
+#include "../storage/Request.h"
 
 namespace grape{
-    Client::Client(boost::asio::io_context &ioc, const std::string &host, const std::string &port): socket_(ioc), resolver_(ioc) {
+    Client::Client(boost::asio::io_context &ioc): socket_(ioc), resolver_(ioc) {}
+
+    void Client::Connect() {
         resolver_.async_resolve(tcp::v4(), host, port,
                                 bind(&Client::OnResolve, this, placeholders::_1, placeholders::_2));
     }
@@ -23,11 +26,12 @@ namespace grape{
     void Client::OnConnect(boost::system::error_code ec) {
         if(!ec){
             auto se = make_shared<Session>(move(socket_));
-            se->SetMessage(message_f);
             se->SetConnection(connection_f);
+            se->SetMessage(message_f);
             se->SetClose(close_f);
             Logger::INFO(format("Connect Succeed"));
-            se->DoWrite("Hello World!");
+
+            se->DoWrite(context);
             se->Start();
         }
         else {
