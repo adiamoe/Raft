@@ -110,6 +110,7 @@ namespace pod{
 
         grape::Logger::INFO(format("Vote Granted: Vote for %1%")%re.candidateID);
         ret.grant = true;
+        context.SetVoteFor(re.candidateID);
         r =  CreateVoteResponse(ret);
         return false;
     }

@@ -23,7 +23,7 @@ namespace grape {
     public:
         using callBackFunction = function<void(shared_ptr<Session> con)>;
 
-        Session(tcp::socket socket) : socket_(move(socket)), mode_(ready), state_(normal){}
+        Session(tcp::socket socket) : socket_(move(socket)), mode_(ready){}
 
         Session(const Session &) = delete;
 
@@ -63,7 +63,6 @@ namespace grape {
         queue<string> write_buffer_;
         uint32_t length_;
         Mode mode_;
-        ConnState state_;
         callBackFunction connection_f;
         callBackFunction message_f;
         callBackFunction close_f;

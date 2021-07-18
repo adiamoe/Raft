@@ -30,9 +30,8 @@ namespace pod{
         boost::asio::io_context &ioc;
         AbstractState *state;
         grape::Server server;
-        grape::Client client;
+        map<int, shared_ptr<grape::Client>> clients;
         int serverId;
-        map<int, pair<string, string>> members;
         shared_ptr<grape::Timer> timer;
     };
 }

@@ -24,7 +24,7 @@ namespace pod{
     }
 
     bool FollowerState::CommandRequest(json &command, string &r) {
-        grape::Logger::WARN(format("Follower state not support command Request!"));
+        grape::Logger::WARN(format("Follower state not support command Request, command will be transmitted to leader"));
         return false;
     }
 

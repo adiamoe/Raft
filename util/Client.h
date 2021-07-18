@@ -56,6 +56,7 @@ namespace grape{
         string host;
         string port;
         string context;
+        int retryTime;
 
         void OnResolve(boost::system::error_code ec, tcp::resolver::results_type endpoints);
 

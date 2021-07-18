@@ -45,12 +45,16 @@ namespace pod{
         }
 
         void SetTerm(int newTerm){
-            assert(term <= newTerm);
-            term = newTerm;
+            if(term <= newTerm){
+                term = newTerm;
+                leader = 0;
+                lastVote = 0;
+            }
         }
 
         void SetLeader(int newLeader){
             leader = newLeader;
+            lastVote = 0;
         }
 
         int GetLeader(){
@@ -63,6 +67,10 @@ namespace pod{
 
         int GetLastVote(){
             return lastVote;
+        }
+
+        void SetVoteFor(int candidateId){
+            lastVote = candidateId;
         }
 
         LogStore& GetLogStore(){

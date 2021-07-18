@@ -56,6 +56,7 @@ namespace pod{
 
         if(re.grant)
             vote++;
+
         if(vote > context.GetMemberNumber()/2)
         {
             Transfer ts;

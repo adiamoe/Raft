@@ -6,18 +6,15 @@
 
 int main(int argc, char *argv[]){
 
-    int id = *argv[1];
-    int port = *argv[2];
-    boost::asio::io_context ioc;
-    vector<pod::address> member = {{"localhost", "8080", 1}, {"localhost", "8081", 2}, {"localhost", "8082", 3}};
-    pod::RaftServer raftNode1(ioc, id, member, port);
-    grape::Client client(ioc);
-    client.SetHostAndPort("localhost", "8080");
+    if(argc!=3)
+        return 0;
 
-    pod::Command com;
-    com.log = "1234567890";
-    client.SetContext(pod::CreateCommand(com));
-    client.Connect();
+    boost::asio::io_context ioc;
+
+    int id = atoi(argv[1]);
+    int port = atoi(argv[2]);
+    vector<pod::address> member = {{"localhost", "50000", 1}, {"localhost", "50001", 2}, {"localhost", "50002", 3}};
+    pod::RaftServer raftNode1(ioc, id, member, port);
 
     ioc.run();
     return 0;

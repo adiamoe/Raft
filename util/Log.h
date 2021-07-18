@@ -16,6 +16,7 @@ namespace grape{
         static void INFO(const format &msg);
         static void WARN(const format &msg);
         static void ERROR(const format &msg);
+        static void DEBUG(const format &msg);
     };
 }
 

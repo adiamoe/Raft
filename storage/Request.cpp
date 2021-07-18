@@ -35,7 +35,7 @@ namespace pod{
         js["type"] = int(APPEND_RESPONSE);
         js["followerTerm"] = re.followerTerm;
         js["index"] = re.index;
-        js["seccess"] = re.success;
+        js["success"] = re.success;
         return js.dump();
     }
 

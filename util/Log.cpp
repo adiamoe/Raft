@@ -21,4 +21,8 @@ namespace grape{
         std::cout<<"[ERROR] "<<message<<endl;
         exit(-1);
     }
+
+    void Logger::DEBUG(const format &msg) {
+        std::cout<<"[DEBUG] "<<msg<<endl;
+    }
 }

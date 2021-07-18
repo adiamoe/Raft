@@ -24,6 +24,7 @@ class Timer: public std::enable_shared_from_this<Timer> {
                 if(self->cancle)
                     return;
                 self->handler();
+                self->Start();
             });
         }
 

@@ -20,7 +20,9 @@ namespace pod{
         int lastIndex;
     public:
 
-        LogStore():lastIndex(0){}
+        LogStore():lastIndex(0){
+            entry.push_back({0, ""});
+        }
 
         LogStore(LogStore &store) = default;
 

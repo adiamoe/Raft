@@ -35,10 +35,12 @@ namespace pod{
 
         if(re.success)
             LogToCommit[re.index]+=1;
+
         if(LogToCommit[re.index] > context.GetMemberNumber()/2)
         {
             context.SetCommitIndex(re.index);
             LogToCommit.erase(re.index);
+            grape::Logger::INFO(format("Log %1% has been committed")%re.index);
         }
         return false;
     }
@@ -74,7 +76,7 @@ namespace pod{
         Command com = GetCommand(command);
         //Leader从来不会覆盖或删除自己的日志条目，对于新的记录，直接添加到Log里
         AppendRequest re = context.Append(com.log);
-        LogToCommit[re.entryIndex] = 0;
+        LogToCommit[re.entryIndex] = 1;
         r = CreateAppendRequest(re);
         return false;
     }
@@ -88,6 +90,13 @@ namespace pod{
         re.leaderTerm = context.GetTerm();
         re.leaderID = context.GetLeader();
         re.heartBeat = true;
+
+        //heartbeat 消息不会检查以下信息，设为0
+        re.entryIndex = 0;
+        re.lastEntryTerm = 0;
+        re.lastEntryIndex = 0;
+        re.commitIndex = 0;
+        re.log = "";
         return CreateAppendRequest(re);
     }
 

@@ -14,7 +14,7 @@ namespace pod{
     private:
         int vote;
     public:
-        CandidateState(ServerContext context): AbstractState(context), vote(0){
+        CandidateState(ServerContext context): AbstractState(context), vote(1){
             UpdateTermAndLeader(context.GetTerm()+1, 0);
         }
 

@@ -6,7 +6,7 @@
 #include "../storage/Request.h"
 
 namespace grape{
-    Client::Client(boost::asio::io_context &ioc): socket_(ioc), resolver_(ioc) {}
+    Client::Client(boost::asio::io_context &ioc): socket_(ioc), resolver_(ioc), retryTime(0) {}
 
     void Client::Connect() {
         resolver_.async_resolve(tcp::v4(), host, port,
@@ -25,6 +25,7 @@ namespace grape{
 
     void Client::OnConnect(boost::system::error_code ec) {
         if(!ec){
+            retryTime = 0;
             auto se = make_shared<Session>(move(socket_));
             se->SetConnection(connection_f);
             se->SetMessage(message_f);
@@ -35,7 +36,13 @@ namespace grape{
             se->Start();
         }
         else {
-            Logger::WARN(format("Connect Failed"));
+            retryTime++;
+            if(retryTime<=3){
+                Logger::WARN(format("Connect Failed, try to reconnect"));
+                Connect();
+            } else{
+                Logger::WARN(format("Three failures. Abandon the connection"));
+            }
         }
     }
 
