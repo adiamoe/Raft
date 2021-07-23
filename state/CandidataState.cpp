@@ -9,8 +9,6 @@ namespace pod{
     bool CandidateState::HandleAppendRequest(json &AppendRe, string &r) {
 
         AppendRequest re = GetAppendRequest(AppendRe);
-        AppendResponse ret;
-        ret.followerTerm = context.GetTerm();
 
         // step down as a candidate
         if(re.leaderTerm >= context.GetTerm()){
@@ -19,6 +17,11 @@ namespace pod{
             return true;
         }
 
+        AppendResponse ret;
+        ret.id = context.GetId();
+        ret.followerTerm = context.GetTerm();
+        ret.success = false;
+        r = CreateAppendResponse(ret);
         return false;
     }
 

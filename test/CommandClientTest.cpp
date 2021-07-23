@@ -3,6 +3,7 @@
 //
 
 #include "../state/RaftServer.h"
+#include <iostream>
 
 int main(int argc, char *argv[]){
 
@@ -16,10 +17,13 @@ int main(int argc, char *argv[]){
     client.SetHostAndPort("localhost", port);
 
     pod::Command com;
-    com.log = "1234567890";
-    client.SetContext(pod::CreateCommand(com));
-    client.Connect();
+    string log;
+    while(std::cin>>log){
+        com.log = log;
+        client.SetContext(pod::CreateCommand(com));
+        client.Connect();
+        ioc.run();
+    }
 
-    ioc.run();
     return 0;
 }

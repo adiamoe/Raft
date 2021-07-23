@@ -22,7 +22,7 @@ namespace grape{
         Client& operator=(Client &) =delete;
         Client& operator=(const Client &) =delete;
 
-        void Connect();
+        void Connect(bool reply);
 
         void SetConnection(const callBackFunction &con){
             connection_f = con;
@@ -58,9 +58,9 @@ namespace grape{
         string context;
         int retryTime;
 
-        void OnResolve(boost::system::error_code ec, tcp::resolver::results_type endpoints);
+        void OnResolve(boost::system::error_code ec, tcp::resolver::results_type endpoints, bool reply);
 
-        void OnConnect(boost::system::error_code ec);
+        void OnConnect(boost::system::error_code ec, bool reply);
     };
 }
 

@@ -19,6 +19,19 @@ namespace pod{
         return re;
     }
 
+    AppendRequest ServerContext::AppendReplay(int index) {
+        AppendRequest re;
+        re.log = store.Log(index);
+        re.entryIndex = index;
+        re.lastEntryIndex = re.entryIndex - 1;
+        re.heartBeat = false;
+        re.leaderTerm = term;
+        re.leaderID = leader;
+        re.commitIndex = commitIndex;
+        re.lastEntryTerm = store.Term(re.lastEntryIndex);
+        return re;
+    }
+
     VoteRequest ServerContext::Vote(){
         VoteRequest re;
         re.lastEntryIndex = store.LastIndex();

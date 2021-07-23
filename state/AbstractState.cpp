@@ -20,6 +20,7 @@ namespace pod{
     bool AbstractState::HandleAppendRequest(json &AppendRe, string &r) {
         AppendRequest re = GetAppendRequest(AppendRe);
         AppendResponse ret;
+        ret.id = context.GetId();
         ret.followerTerm = context.GetTerm();
         ret.index = re.heartBeat? -1:re.entryIndex;
 

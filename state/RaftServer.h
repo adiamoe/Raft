@@ -27,6 +27,10 @@ namespace pod{
     private:
         void Transition(ServerContext::STATE_TYPE type);
 
+        void poll(const string &msg);
+
+        unsigned int getRandom() const;
+
         boost::asio::io_context &ioc;
         AbstractState *state;
         grape::Server server;

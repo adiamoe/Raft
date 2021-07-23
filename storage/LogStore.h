@@ -52,6 +52,10 @@ namespace pod{
             entry.push_back({term, log});
             lastIndex = entrySize() - 1;
         }
+
+        string Log(int index){
+            return entry[index].log;
+        }
     };
 }
 

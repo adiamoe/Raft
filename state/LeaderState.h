@@ -12,6 +12,7 @@ namespace pod{
     class LeaderState : public AbstractState{
     private:
         map<int, int> LogToCommit;
+        queue<pair<int, int>> appendFailed;
     public:
 
         LeaderState(ServerContext context, int id): AbstractState(context){
@@ -31,6 +32,8 @@ namespace pod{
         ServerContext::STATE_TYPE type() override;
 
         string HeartBeat() override;
+
+        pair<int, string> replay() override;
 
     };
 }

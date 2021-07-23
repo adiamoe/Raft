@@ -33,6 +33,7 @@ namespace pod{
     std::string CreateAppendResponse(const AppendResponse &re){
         json js;
         js["type"] = int(APPEND_RESPONSE);
+        js["id"] = re.id;
         js["followerTerm"] = re.followerTerm;
         js["index"] = re.index;
         js["success"] = re.success;
@@ -88,6 +89,7 @@ namespace pod{
     AppendResponse GetAppendResponse(const json &js){
         AppendResponse re;
         re.type = (REQUEST_TYPE) js["type"].get<int>();
+        re.id = js["id"].get<int>();
         re.followerTerm = js["followerTerm"].get<int>();
         re.success = js["success"].get<bool>();
         re.index = js["index"].get<int>();

@@ -48,6 +48,10 @@ namespace pod{
             grape::Logger::ERROR(format("not support!"));
         }
 
+        virtual pair<int, string> replay(){
+            grape::Logger::ERROR(format("not support!"));
+        }
+
         int GetLeaderId(){
             return context.GetLeader();
         }

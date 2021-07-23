@@ -10,6 +10,7 @@ namespace pod{
 
         AppendRequest re = GetAppendRequest(AppendRe);
         AppendResponse ret;
+        ret.id = context.GetId();
         ret.followerTerm = context.GetTerm();
 
         // step down as a Leader
@@ -27,6 +28,7 @@ namespace pod{
 
     bool LeaderState::HandleAppendResponse(json &AppendRe, string &r) {
         AppendResponse re = GetAppendResponse(AppendRe);
+
         if(UpdateTermAndLeader(re.followerTerm, 0))
             return true;
 
@@ -35,6 +37,10 @@ namespace pod{
 
         if(re.success)
             LogToCommit[re.index]+=1;
+        else {
+            appendFailed.emplace(re.id, re.index-1);
+            appendFailed.emplace(re.id, re.index);
+        }
 
         if(LogToCommit[re.index] > context.GetMemberNumber()/2)
         {
@@ -98,6 +104,16 @@ namespace pod{
         re.commitIndex = 0;
         re.log = "";
         return CreateAppendRequest(re);
+    }
+
+    pair<int, string> LeaderState::replay() {
+        if(appendFailed.empty())
+            return {0, ""};
+        auto replayLog = appendFailed.front();
+        appendFailed.pop();
+        AppendRequest re = context.AppendReplay(replayLog.second);
+        string r = CreateAppendRequest(re);
+        return {replayLog.first, r};
     }
 
 }

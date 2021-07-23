@@ -78,6 +78,7 @@ namespace grape{
         auto self(shared_from_this());
         if(write_buffer_.empty()){
             mode_ = ready;
+            return;
         }
         else{
             string to_send(move(write_buffer_.front()));

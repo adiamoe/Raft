@@ -47,6 +47,7 @@ namespace pod{
 
     struct AppendResponse{
         REQUEST_TYPE type = APPEND_RESPONSE;
+        int id;
         int followerTerm;
         int index;
         bool success;

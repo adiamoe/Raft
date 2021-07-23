@@ -81,7 +81,13 @@ namespace pod{
             return memberNum;
         }
 
+        int GetId(){
+            return serverId;
+        }
+
         AppendRequest Append(string &log);
+
+        AppendRequest AppendReplay(int index);
 
         VoteRequest Vote();
 
